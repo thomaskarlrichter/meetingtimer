@@ -1,0 +1,19 @@
+<head>
+  <title>meetingstimer</title>
+</head>
+
+<body>
+  <h1>Meetingstimer</h1>
+
+  {{> loginButtons}}
+  {{> uhr}}
+</body>
+
+<template name="uhr">
+  <div class="clock">
+      <input type="number" id="time-value" name="timeValue" value="30">
+    <button class="start">Start</button><button class="reset">Reset</button>
+    <h1>{{counter}}</h1>
+  </div>
+
+</template>
