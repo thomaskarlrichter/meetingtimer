@@ -17,13 +17,21 @@ if (Meteor.isClient) {
     'click .start': function (event) {
       Session.set("counter", Session.get("counter") - 1);
       if (!isRuning) {
+        // RESET BUZZER
+        $(".clock").css({"background-color":"#eee"});
         $(".start").html("Stopp");
         isRuning = setInterval(function(){
           if(Session.get("counter") > 0)  {
             Session.set("counter", Session.get("counter") - 1);
           } else {
             console.log("BUZZER");
-            $(".start").html("Start");          
+            //BUZZER
+            $(".clock")
+              .animate({"opacity": "toggle"}, "slow")
+              .animate({"opacity":"toggle","height": "toggle"}, "fast")
+              .css("background-color", "red");
+            //BUZZER
+            $(".start").html("Start");
             Session.set("counter", this.$("#time-value")[0].value);
             clearInterval(isRuning);
             isRuning = false;
@@ -37,6 +45,8 @@ if (Meteor.isClient) {
       }
     },
     'click .reset': function () {
+      // RESET BUZZER
+      $(".clock").css({"background-color":"#eee"});
       $(".start").html("Start");
       console.log("reset");
       if(isRuning){
