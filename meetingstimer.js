@@ -35,6 +35,7 @@ if (Meteor.isClient) {
             Session.set("counter", this.$("#time-value")[0].value);
             clearInterval(isRuning);
             isRuning = false;
+            document.getElementById('buzzer').play();
           }
         }, 1000);
       } else {
@@ -49,6 +50,8 @@ if (Meteor.isClient) {
       $(".clock").css({"background-color":"#eee"});
       $(".start").html("Start");
       console.log("reset");
+      document.getElementById('buzzer').pause();
+
       if(isRuning){
         clearInterval(isRuning);
         isRuning=false;

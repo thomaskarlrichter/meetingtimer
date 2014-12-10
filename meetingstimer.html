@@ -4,11 +4,22 @@
 
 <template name="layout">
   <h1>Meetingtimer</h1>
-  <header>
-    {{> loginButtons}} <a href="/">Home</a> <a href="/impressum">Impressum</a>
-  </header>
+  <nav class="navbar navbar-default">
+    <ul>
+      <li class="navbar-item">
+        {{> loginButtons}}
+      </li>
+      <li class="navbar-item">
+        <a href="/">Home</a>
+      </li>
+      <li class="navbar-item">
+        <a href="/impressum">Impressum</a>
+      </li>
 
+    </ul>
+  </nav>
   {{> yield}}
+  <audio id="buzzer" src="wecker.mp3" preload="auto"></audio>
 </template>
 
 <template name="uhr">
@@ -17,7 +28,6 @@
     <button class="start">Start</button><button class="reset">Reset</button>
     <div class="counter">{{counter}}</div>
   </div>
-
 </template>
 
 <template name="impressum">
