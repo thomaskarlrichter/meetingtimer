@@ -24,8 +24,10 @@
 
 <template name="uhr">
   <div class="clock">
+    {{#if isSelf}}
     <input type="number" id="time-value" name="timeValue" value="30" length="5">
     <button class="start">Start</button><button class="reset">Reset</button>
+    {{/if}}
     <div class="counter">{{counter}}</div>
   </div>
 </template>
