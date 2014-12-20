@@ -1,5 +1,7 @@
 <head>
   <title>meetingtimer</title>
+  <link rel="import" href="bower_components/paper-checkbox/paper-checkbox.html">
+  <link rel="import" href="bower_components/paper-button/paper-button.html">
 </head>
 
 <template name="layout">
@@ -18,8 +20,16 @@
 
     </ul>
   </nav>
+  {{#if currentUser}}
+  <div>
   {{> yield}}
   <audio id="buzzer" src="wecker.mp3" preload="auto"></audio>
+  </div>
+  {{else}}
+  <div class="clock">
+  Bitte loggen Sie sich ein, um den Meetingtimer zu benutzen!
+</div>
+  {{/if}}
 </template>
 
 <template name="uhr">
@@ -34,5 +44,9 @@
 
 <template name="impressum">
   <h3>Impressum</h3>
+  <paper-checkbox checked></paper-checkbox>
+  <paper-button>flat button</paper-button>
+  <paper-button raised>raised button</paper-button>
+
   <p>Thomas Richter &copy; 2014 Wolfsried</p>
 </template>

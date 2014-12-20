@@ -1,6 +1,9 @@
 Timer = new Mongo.Collection("timer");
 
 if (Meteor.isServer) {
+  Meteor.publish("timer", function(){
+    return Timer.find({});
+  });
   Meteor.startup(function () {
     if(Timer.find().count()>0){
       Timer.remove({_id: "123"});
@@ -66,7 +69,7 @@ if (Meteor.isClient) {
             console.log("BUZZER");
 
             $(".start").html("Start");
-            Timer.update("123", {$set: {counter: timeSpan}, $set: {user: null}});
+            Timer.update("123", {$set: {counter: timeSpan, user: null}});
             clearInterval(isRuning);
             if(Meteor.user()){
               Session.set("myRunning", false);
@@ -76,7 +79,7 @@ if (Meteor.isClient) {
         }, 1000);
       } else {
         $(".start").html("Start");
-        Timer.update("123", {$set: {counter: timeSpan}, $set: {user: null}});
+        Timer.update("123", {$set: {counter: timeSpan, user: null}});
         clearInterval(isRuning);
         isRuning = false;
       }
@@ -85,14 +88,15 @@ if (Meteor.isClient) {
       // RESET BUZZER
       $(".clock").css({"background-color":"#eee"});
       $(".start").html("Start");
-      console.log("reset");
+      console.log("reset", timeSpan);
       document.getElementById('buzzer').pause();
 
       if(isRuning){
         clearInterval(isRuning);
         isRuning=false;
       }
-      Timer.update("123", {$set: {counter: timeSpan}, $set: {user: null}});
+      Timer.update("123", {$set: {counter: timeSpan, user: null}});
+      console.log(Timer.findOne("123").counter);
     }
   });
 }
