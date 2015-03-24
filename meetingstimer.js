@@ -8,42 +8,60 @@ if (Meteor.isServer) {
     if(Timer.find().count()>0){
       Timer.remove({_id: "123"});
     }
-    Timer.insert({_id: "123", counter: 30});
+    Timer.insert({_id: "123", counter: 60});
     // TODO set to some default
-    // code to run on server at startup
   });
 }
 
 
 if (Meteor.isClient) {
-  timeSpan = 30;
+  timeSpan = 60;
   isRuning = false;
   Session.set("myRunning", false);
+  snd = new Audio("wecker.mp3");
+  snd.load();
   //Session.setDefault("counter", timeSpan);
 
   Template.uhr.helpers({
     counter: function () {
-      if(Timer.findOne("123").counter === 0){
+      var pad = function (num, size) {
+         var s = "000000000" + num;
+         return s.substr(s.length-size);
+      };
+      var c = Timer.findOne("123").counter;
+      if(c === 0){
         //BUZZER
         $(".clock")
         .animate({"opacity": "toggle"}, "slow")
-        .animate({"opacity":"toggle","height": "toggle"}, "fast")
-        document.getElementById('buzzer').play();
+        .animate({"opacity":"toggle","height": "toggle"}, "fast");
+        snd.play();
         //BUZZER
       }
-      return Timer.findOne("123").counter;
+      return Math.floor(c / 60)+":"+ pad(c % 60, 2);
+    },
+    getTimeUser: function () {
+      return Timer.findOne("123").user.emails[0].address;
     },
     isSelf: function () {
       // wenn der timer nicht läuft
       // der der es laufen lässt soll immer gezeigt werden zw. start und stopp
-      if (Meteor.user() && Timer.findOne("123").user && Timer.findOne("123").user._id !== Meteor.userId()) return false;
+      if (Meteor.user() && Timer.findOne("123").user &&
+          Timer.findOne("123").user._id !== Meteor.userId())
+          return false;
       return true;
     }
   });
 
   Template.uhr.events({
-    'change #time-value': function (event) {
-      timeSpan = +event.target.value;
+    'change #time-minute': function (event) {
+      timeSpan = $('#time-minute').val()*60 + parseInt($('#time-second').val());
+      console.log(timeSpan);
+      Timer.update("123", {$set: {counter: timeSpan}});
+      return false;
+    },
+    'change #time-second': function (event) {
+      timeSpan = $('#time-minute').val()*60 + parseInt($('#time-second').val());
+      console.log(timeSpan);
       Timer.update("123", {$set: {counter: timeSpan}});
       return false;
     },
@@ -53,7 +71,7 @@ if (Meteor.isClient) {
       }
       if (!isRuning) {
         // RESET BUZZER
-        $(".clock").css({"background-color":"#eee"});
+        //$(".clock").css({"background-color":"#eee"});
         $(".start").html("Stopp");
         isRuning = setInterval(function(){
           if(Timer.findOne("123").counter > 0)  {
@@ -86,6 +104,7 @@ if (Meteor.isClient) {
     },
     'click .reset': function () {
       // RESET BUZZER
+
       $(".clock").css({"background-color":"#eee"});
       $(".start").html("Start");
       console.log("reset", timeSpan);

@@ -11,42 +11,47 @@
       <li class="navbar-item">
         {{> loginButtons}}
       </li>
+      {{#if currentUser}}
       <li class="navbar-item">
-        <a href="/">Home</a>
+        <a href="/">Timer</a>
       </li>
+      {{/if}}
       <li class="navbar-item">
         <a href="/impressum">Impressum</a>
       </li>
-
     </ul>
   </nav>
   {{#if currentUser}}
-  <div>
-  {{> yield}}
-  <audio id="buzzer" src="wecker.mp3" preload="auto"></audio>
-  </div>
+
+      {{> yield}}
+
   {{else}}
-  <div class="clock">
-  Bitte loggen Sie sich ein, um den Meetingtimer zu benutzen!
-</div>
+    <div class="clock">
+    Bitte loggen Sie sich ein, um den Meetingtimer zu benutzen!
+    </div>
   {{/if}}
 </template>
 
 <template name="uhr">
   <div class="clock">
-    {{#if isSelf}}
-    <input type="number" id="time-value" name="timeValue" value="30" length="5">
-    <button class="start">Start</button><button class="reset">Reset</button>
-    {{/if}}
-    <div class="counter">{{counter}}</div>
+    <div class="inner">
+      {{#if isSelf}}
+        <input type="number" id="time-minute" name="timeMinute" value="00" length="2">:
+        <input type="number" id="time-second" name="timeSecond"
+               min="0" max="59" value="00" length="2">
+        <br>
+        <paper-button raised class="start">Start</paper-button>
+        <paper-button raised class="reset">Reset</paper-button><br>
+      {{else}}
+        <div class="speaker">Es spricht {{getTimeUser}}</div> 
+      {{/if}}
+      <div class="counter">{{counter}}</div>
+    </div>
   </div>
 </template>
 
 <template name="impressum">
   <h3>Impressum</h3>
   <paper-checkbox checked></paper-checkbox>
-  <paper-button>flat button</paper-button>
-  <paper-button raised>raised button</paper-button>
-
-  <p>Thomas Richter &copy; 2014 Wolfsried</p>
+  <paper-button raised>Thomas Richter &copy; 2015 - 1</paper-button>
 </template>
