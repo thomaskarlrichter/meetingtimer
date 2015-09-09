@@ -4,6 +4,9 @@ if (Meteor.isServer) {
   Meteor.publish("timer", function(){
     return Timer.find({});
   });
+  Meteor.publish('userPresence', function(){
+    return Presences.find({});
+  });
   Meteor.startup(function () {
     if(Timer.find().count()>0){
       Timer.remove({_id: "123"});
@@ -15,6 +18,7 @@ if (Meteor.isServer) {
 
 
 if (Meteor.isClient) {
+  Meteor.subscribe("userPresence");
   timeSpan = 60;
   isRuning = false;
   Session.set("myRunning", false);
