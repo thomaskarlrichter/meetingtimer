@@ -22,7 +22,8 @@
     </ul>
   </nav>
   {{#if currentUser}}
-
+  
+      {{> listUsers}}
       {{> yield}}
 
   {{else}}
@@ -32,6 +33,14 @@
   {{/if}}
 </template>
 
+<template name="listUsers">
+  <h2>Eingeloggte Teilnehmer</h2>
+  <ul>
+    {{#each loged_in_users}}
+    <li>{{username}}</li>
+    {{/each}}
+  </ul>
+</template>
 <template name="uhr">
   <div class="clock">
     <div class="inner">
@@ -43,7 +52,7 @@
         <paper-button raised class="start">Start</paper-button>
         <paper-button raised class="reset">Reset</paper-button><br>
       {{else}}
-        <div class="speaker">Es spricht {{getTimeUser}}</div> 
+        <div class="speaker">Es spricht {{getTimeUser}}</div>
       {{/if}}
       <div class="counter">{{counter}}</div>
     </div>
