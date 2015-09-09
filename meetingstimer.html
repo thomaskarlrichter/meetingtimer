@@ -22,7 +22,7 @@
     </ul>
   </nav>
   {{#if currentUser}}
-  
+
       {{> listUsers}}
       {{> yield}}
 
@@ -36,7 +36,7 @@
 <template name="listUsers">
   <h2>Eingeloggte Teilnehmer</h2>
   <ul>
-    {{#each loged_in_users}}
+    {{#each logged_in_users}}
     <li>{{username}}</li>
     {{/each}}
   </ul>

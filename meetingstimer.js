@@ -1,11 +1,7 @@
 Timer = new Mongo.Collection("timer");
-
 if (Meteor.isServer) {
   Meteor.publish("timer", function(){
     return Timer.find({});
-  });
-  Meteor.publish('userPresence', function(){
-    return Presences.find({});
   });
   Meteor.startup(function () {
     if(Timer.find().count()>0){
@@ -18,14 +14,20 @@ if (Meteor.isServer) {
 
 
 if (Meteor.isClient) {
-  Meteor.subscribe("userPresence");
   timeSpan = 60;
   isRuning = false;
   Session.set("myRunning", false);
   snd = new Audio("wecker.mp3");
   snd.load();
   //Session.setDefault("counter", timeSpan);
-
+  Template.listUsers.helpers({
+    logged_in_users: function() {
+      return [
+        {username: "thomas"},
+        {username: "evelyn"}
+      ];
+    }
+  });
   Template.uhr.helpers({
     counter: function () {
       var pad = function (num, size) {
