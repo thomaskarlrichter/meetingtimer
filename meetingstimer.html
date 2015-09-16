@@ -23,7 +23,7 @@
   </nav>
   {{#if currentUser}}
 
-      {{> listUsers}}
+      {{> users}}
       {{> yield}}
 
   {{else}}
@@ -32,15 +32,17 @@
     </div>
   {{/if}}
 </template>
-
-<template name="listUsers">
-  <h2>Eingeloggte Teilnehmer</h2>
-  <ul>
-    {{#each logged_in_users}}
-    <li>{{username}}</li>
-    {{/each}}
-  </ul>
+<template name="users">
+	<div class="users">
+    Online:
+		{{#each users}}
+			<span class="username">
+			 {{username}}
+     </span>
+		{{/each}}
+	</div>
 </template>
+
 <template name="uhr">
   <div class="clock">
     <div class="inner">

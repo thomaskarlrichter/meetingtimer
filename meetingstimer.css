@@ -4,6 +4,18 @@
   padding: 10px;
   background-color: #fff;
 }
+.users {
+  border: 3px dashed blue;
+  padding: 10px;
+  margin: 20px;
+  background-color: #eee;
+}
+.username {
+  margin: 1px 1px 1px 15px;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: blue;
+}
 .inner {
   border: 3px dashed blue;
   padding: 20px;

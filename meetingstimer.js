@@ -1,7 +1,11 @@
 Timer = new Mongo.Collection("timer");
+
 if (Meteor.isServer) {
   Meteor.publish("timer", function(){
     return Timer.find({});
+  });
+  Meteor.publish('users', function() {
+	  return Meteor.users.find({}, {fields: {status: 1, statusDefault: 1, statusConnection: 1, username: 1}});
   });
   Meteor.startup(function () {
     if(Timer.find().count()>0){
@@ -9,25 +13,46 @@ if (Meteor.isServer) {
     }
     Timer.insert({_id: "123", counter: 60});
     // TODO set to some default
+    UserPresenceMonitor.start();
+
+	  UserPresence.activeLogs();
+	  UserPresence.start();
   });
 }
 
-
 if (Meteor.isClient) {
+  Meteor.subscribe('users');
+  //UserPresence.awayTime = 60000;
+	//UserPresence.awayOnWindowBlur = false;
+	UserPresence.start();
+  Template.registerHelper('getUserName', function(userId) {
+  	if (userId === Meteor.userId()) {
+  		return 'me';
+  	};
+
+  	var user = Meteor.users.findOne({_id: userId});
+  	return user && user.username;
+  });
+  Accounts.ui.config({
+    passwordSignupFields: 'USERNAME_AND_OPTIONAL_EMAIL'
+  });
   timeSpan = 60;
   isRuning = false;
   Session.set("myRunning", false);
   snd = new Audio("wecker.mp3");
   snd.load();
   //Session.setDefault("counter", timeSpan);
-  Template.listUsers.helpers({
-    logged_in_users: function() {
-      return [
-        {username: "thomas"},
-        {username: "evelyn"}
-      ];
-    }
+  Template.users.helpers({
+  	users: function() {
+  		return Meteor.users.find({
+        status: { $in: ['online', 'away']}
+      },
+      {
+        sort: {username: 1}
+      });
+  	}
   });
+
   Template.uhr.helpers({
     counter: function () {
       var pad = function (num, size) {
@@ -46,7 +71,7 @@ if (Meteor.isClient) {
       return Math.floor(c / 60)+":"+ pad(c % 60, 2);
     },
     getTimeUser: function () {
-      return Timer.findOne("123").user.emails[0].address;
+      return Timer.findOne("123").user.username;
     },
     isSelf: function () {
       // wenn der timer nicht läuft
