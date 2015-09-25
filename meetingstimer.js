@@ -1,8 +1,14 @@
 Timer = new Mongo.Collection("timer");
+SpeechRequest = new Mongo.Collection("speechrequest");
 
 if (Meteor.isServer) {
   Meteor.publish("timer", function(){
-    return Timer.find({});
+    return Timer.find({},{
+      sort: {timestamp: 1}
+    });
+  });
+  Meteor.publish("speechrequest", function(){
+    return SpeechRequest.find({});
   });
   Meteor.publish('users', function() {
 	  return Meteor.users.find({}, {fields: {status: 1, statusDefault: 1, statusConnection: 1, username: 1}});
@@ -22,6 +28,7 @@ if (Meteor.isServer) {
 
 if (Meteor.isClient) {
   Meteor.subscribe('users');
+  Meteor.subscribe('speechrequest');
   //UserPresence.awayTime = 60000;
 	//UserPresence.awayOnWindowBlur = false;
 	UserPresence.start();
@@ -95,6 +102,12 @@ if (Meteor.isClient) {
       console.log(timeSpan);
       Timer.update("123", {$set: {counter: timeSpan}});
       return false;
+    },
+    'click #request': function(event){
+      SpeechRequest.insert({
+        uid: Meteor.user(),
+        timestamp: new Date()
+      });
     },
     'click .start': function (event) {
       if(Timer.findOne("123").counter === 0) {
