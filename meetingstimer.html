@@ -37,7 +37,7 @@
     Online:
 		{{#each users}}
 			<span class="username">
-			 {{username}}
+			 {{getUserName _id}}
      </span>
 		{{/each}}
 	</div>
@@ -47,19 +47,31 @@
   <div class="clock">
     <div class="inner">
       {{#if isSelf}}
+        <!-- TODO #if admin-->
+        {{#if isAdmin}}
         <input type="number" id="time-minute" name="timeMinute" value="00" length="2">:
         <input type="number" id="time-second" name="timeSecond"
                min="0" max="59" value="00" length="2">
         <br>
+        <paper-button raised class="clear">lösche Wortmeldungen</paper-button>
+        {{/if}}
+        <!-- /if admin -->
+        <!-- TODO #if hasMoreRequests -->
         <paper-button raised class="start">Start</paper-button>
-        <paper-button raised class="reset">Reset</paper-button><br>
+        <!--paper-button raised class="reset">Reset</paper-button-->
+        <br>
+        <!-- /if hasMoreRequests -->
       {{else}}
         <div class="speaker">Es spricht {{getTimeUser}}</div>
       {{/if}}
       <div class="counter">{{counter}}</div>
     </div>
-    <div>
-      <button id="request">Meldung</button>
+    <div class="requests">
+      <button id="request">Wortmeldung aufzeigen</button>
+      {{#each speechrequests}}
+          <!-- TODO if name === Meteor.users.username then show remove button -->
+          <div>{{name}}: <i> {{timestamp}}</i></div>
+      {{/each}}
     </div>
   </div>
 </template>

@@ -10,6 +10,13 @@
   margin: 20px;
   background-color: #eee;
 }
+.requests {
+  border: 3px dashed blue;
+  padding: 20px;
+  margin: 10px;
+  font-size: 1.5em;
+  background-color: #eee;
+}
 .username {
   margin: 1px 1px 1px 15px;
   font-size: 1.5em;
@@ -25,7 +32,7 @@
 }
 .clock button {
   margin: 10px;
-  width: 150px;
+  min-width: 150px;
   padding: 12px;
   font-size: 1.5em;
 }
