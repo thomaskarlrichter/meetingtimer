@@ -32,14 +32,7 @@ if (Meteor.isClient) {
   //UserPresence.awayTime = 60000;
 	//UserPresence.awayOnWindowBlur = false;
 	UserPresence.start();
-  Template.registerHelper('getUserName', function(userId) {
-    console.log(("in getUserName '"+userId+"'"));
-  	if (userId === Meteor.userId()) {
-  		return 'ich';
-  	};
-  	var user = Meteor.users.findOne({_id: userId});
-  	return user && user.username;
-  });
+
 
   Accounts.ui.config({
     passwordSignupFields: 'USERNAME_AND_OPTIONAL_EMAIL'
@@ -50,6 +43,14 @@ if (Meteor.isClient) {
   snd = new Audio("wecker.mp3");
   snd.load();
   //Session.setDefault("counter", timeSpan);
+  Template.registerHelper('getUserName', function(userId) {
+    console.log(("in getUserName '"+userId+"'"));
+  	if (userId === Meteor.userId()) {
+  		return 'ich';
+  	}
+  	var user = Meteor.users.findOne({_id: userId});
+  	return user && user.username;
+  });
 
   Template.registerHelper('isAdmin', function(){
     var user = Meteor.users.findOne({_id: Meteor.userId()});
@@ -58,6 +59,29 @@ if (Meteor.isClient) {
       return true;
     } else {
       return false;
+    }
+  });
+  Template.requests.helpers({
+    speechrequests: function () {
+      return SpeechRequest.find({},{$sort: {timestamp: 1}});
+    },
+    isIt: function(){
+      if (this.uid._id === Meteor.userId()) {
+        return true;
+      }
+      return false;
+    }
+  });
+  Template.requests.events({
+    'click #request': function(event){
+      SpeechRequest.insert({
+        uid: Meteor.user(),
+        name: Meteor.user().username,
+        timestamp: new Date()
+      });
+    },
+    'click .remove': function(event, template) {
+      console.log(template._id+" removed");
     }
   });
   Template.users.helpers({
@@ -88,9 +112,7 @@ if (Meteor.isClient) {
       }
       return Math.floor(c / 60)+":"+ pad(c % 60, 2);
     },
-    speechrequests: function () {
-      return SpeechRequest.find({},{$sort: {timestamp: 1}});
-    },
+
     getTimeUser: function () {
       return Timer.findOne("123").user.username;
     },

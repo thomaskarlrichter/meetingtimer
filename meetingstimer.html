@@ -25,13 +25,14 @@
 
       {{> users}}
       {{> yield}}
-
+      {{> requests}}
   {{else}}
     <div class="clock">
     Bitte loggen Sie sich ein, um den Meetingtimer zu benutzen!
     </div>
   {{/if}}
 </template>
+
 <template name="users">
 	<div class="users">
     Online:
@@ -41,6 +42,20 @@
      </span>
 		{{/each}}
 	</div>
+</template>
+
+<template name="requests">
+  <div class="requests">
+    <paper-button raised id="request">Wortmeldung aufzeigen</paper-button>
+    {{#each speechrequests}}
+        <!-- TODO if name === Meteor.users.username then show remove button -->
+        <div>{{name}}: <i> {{timestamp}}</i>
+        {{#if isIt}}
+        <paper-button class="remove" data-id="{{_id}}">zurückziehen</paper-button>
+        {{/if}}
+        </div>
+    {{/each}}
+  </div>
 </template>
 
 <template name="uhr">
@@ -66,18 +81,11 @@
       {{/if}}
       <div class="counter">{{counter}}</div>
     </div>
-    <div class="requests">
-      <button id="request">Wortmeldung aufzeigen</button>
-      {{#each speechrequests}}
-          <!-- TODO if name === Meteor.users.username then show remove button -->
-          <div>{{name}}: <i> {{timestamp}}</i></div>
-      {{/each}}
-    </div>
   </div>
 </template>
 
 <template name="impressum">
   <h3>Impressum</h3>
   <paper-checkbox checked></paper-checkbox>
-  <paper-button raised>Thomas Richter &copy; 2015 - 1</paper-button>
+  <paper-button raised>Thomas Richter &copy; 2015 - 2</paper-button>
 </template>
