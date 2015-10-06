@@ -1,8 +1,17 @@
 Timer = new Mongo.Collection("timer");
+SpeechRequest = new Mongo.Collection("speechrequest");
 
 if (Meteor.isServer) {
   Meteor.publish("timer", function(){
-    return Timer.find({});
+    return Timer.find({},{
+      sort: {timestamp: 1}
+    });
+  });
+  Meteor.publish("speechrequest", function(){
+    return SpeechRequest.find({});
+  });
+  Meteor.publish('users', function() {
+	  return Meteor.users.find({}, {fields: {status: 1, statusDefault: 1, statusConnection: 1, username: 1}});
   });
   Meteor.startup(function () {
     if(Timer.find().count()>0){
@@ -10,17 +19,87 @@ if (Meteor.isServer) {
     }
     Timer.insert({_id: "123", counter: 60});
     // TODO set to some default
+    UserPresenceMonitor.start();
+
+	  UserPresence.activeLogs();
+	  UserPresence.start();
   });
 }
 
-
 if (Meteor.isClient) {
+  Meteor.subscribe('users');
+  Meteor.subscribe('speechrequest');
+  //UserPresence.awayTime = 60000;
+	//UserPresence.awayOnWindowBlur = false;
+	UserPresence.start();
+
+
+  Accounts.ui.config({
+    passwordSignupFields: 'USERNAME_AND_OPTIONAL_EMAIL'
+  });
   timeSpan = 60;
   isRuning = false;
   Session.set("myRunning", false);
   snd = new Audio("wecker.mp3");
   snd.load();
   //Session.setDefault("counter", timeSpan);
+  Template.registerHelper('getUserName', function(userId) {
+    console.log(("in getUserName '"+userId+"'"));
+  	if (userId === Meteor.userId()) {
+  		return 'ich';
+  	}
+  	var user = Meteor.users.findOne({_id: userId});
+  	return user && user.username;
+  });
+
+  Template.registerHelper('isAdmin', function(){
+    var user = Meteor.users.findOne({_id: Meteor.userId()});
+    // der erste eingeloggte sollte erfasst werden
+    if(user.username === "thomas") {
+      return true;
+    } else {
+      return false;
+    }
+  });
+  Template.requests.helpers({
+    speechrequests: function () {
+      return SpeechRequest.find({},{$sort: {timestamp: 1}});
+    }
+  });
+  Template.requests.events({
+    'click #request': function(event){
+      SpeechRequest.insert({
+        uid: Meteor.userId(),
+        name: Meteor.user().username,
+        timestamp: new Date()
+      });
+    }
+  });
+  Template.request.helpers({
+    isIt: function(){
+      console.log(this.uid, Meteor.userId());
+      if (this.uid === Meteor.userId()) {
+        return true;
+      }
+      return false;
+    }
+  });
+  Template.request.events({
+    'click .remove': function(event) {
+      SpeechRequest.remove(this._id);
+      console.log(this._id+" removed");
+    }    
+  });
+  Template.users.helpers({
+  	users: function() {
+  		return Meteor.users.find({
+        status: { $in: ['online', 'away']}
+      },
+      {
+        sort: {username: 1}
+      });
+  	}
+  });
 
   Template.uhr.helpers({
     counter: function () {
@@ -39,8 +118,9 @@ if (Meteor.isClient) {
       }
       return Math.floor(c / 60)+":"+ pad(c % 60, 2);
     },
+
     getTimeUser: function () {
-      return Timer.findOne("123").user.emails[0].address;
+      return Timer.findOne("123").user.username;
     },
     isSelf: function () {
       // wenn der timer nicht läuft
@@ -65,7 +145,21 @@ if (Meteor.isClient) {
       Timer.update("123", {$set: {counter: timeSpan}});
       return false;
     },
+    'click #request': function(event){
+      SpeechRequest.insert({
+        uid: Meteor.userId(),
+        name: Meteor.user().username,
+        timestamp: new Date()
+      });
+    },
+    'click .clear': function(event){
+      var sr;
+      while(sr = SpeechRequest.findOne({})){
+        SpeechRequest.remove(sr._id);
+      }
+    },
     'click .start': function (event) {
+      // TODO delete most recent SpeechRequest.delete({})
       if(Timer.findOne("123").counter === 0) {
         Timer.update("123", {$inc: {counter: timeSpan}, $set: {user: Meteor.user()}});
       }

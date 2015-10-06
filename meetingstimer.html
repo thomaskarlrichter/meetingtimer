@@ -23,8 +23,9 @@
   </nav>
   {{#if currentUser}}
 
+      {{> users}}
       {{> yield}}
-
+      {{> requests}}
   {{else}}
     <div class="clock">
     Bitte loggen Sie sich ein, um den Meetingtimer zu benutzen!
@@ -32,18 +33,56 @@
   {{/if}}
 </template>
 
+<template name="users">
+	<div class="users">
+    Online:
+		{{#each users}}
+			<span class="username">
+			 {{getUserName _id}}
+     </span>
+		{{/each}}
+	</div>
+</template>
+
+<template name="requests">
+  <div class="requests">
+    <paper-button raised id="request">Wortmeldung aufzeigen</paper-button>
+    {{#each speechrequests}}
+      {{> request}}
+    {{/each}}
+  </div>
+  
+</template>
+
+<template name="request">
+         <!-- TODO if name === Meteor.users.username then show remove button -->
+        <div>{{name}}: <i> {{timestamp}} {{_id}}</i>
+        {{#if isIt}}
+        <paper-button raised class="remove" data-id="{{_id}}">zurückziehen</paper-button>
+        {{/if}}
+        </div>
+</template>
+
 <template name="uhr">
   <div class="clock">
     <div class="inner">
       {{#if isSelf}}
+        <!-- TODO #if admin-->
+        {{#if isAdmin}}
         <input type="number" id="time-minute" name="timeMinute" value="00" length="2">:
         <input type="number" id="time-second" name="timeSecond"
                min="0" max="59" value="00" length="2">
         <br>
+        <paper-button raised class="clear">lösche Wortmeldungen</paper-button>
+        {{/if}}
+        <!-- /if admin -->
+        <!-- TODO #if hasMoreRequests -->
         <paper-button raised class="start">Start</paper-button>
-        <paper-button raised class="reset">Reset</paper-button><br>
+        <!--paper-button raised class="reset">Reset</paper-button-->
+        <br>
+        <!-- /if hasMoreRequests -->
       {{else}}
-        <div class="speaker">Es spricht {{getTimeUser}}</div> 
+        <div class="speaker">Es spricht {{getTimeUser}}</div>
       {{/if}}
       <div class="counter">{{counter}}</div>
     </div>
