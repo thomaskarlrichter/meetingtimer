@@ -1,4 +1,10 @@
 /* CSS declarations go here */
+.navbar-item {
+  display: inline;
+  min-width: 20%;
+  padding: 10px;
+  border: 1px solid grey;
+}
 .clock {
   width: 100%;
   padding: 10px;
@@ -56,7 +62,6 @@ button.remove {
 #login-buttons {
   padding: 5px;
   background-color: #ddd;
-  border-radius: 5px;
   border: 1px solid grey;
 }
 #time-second, #time-minute {

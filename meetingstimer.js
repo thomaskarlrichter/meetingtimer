@@ -76,6 +76,9 @@ if (Meteor.isClient) {
     }
   });
   Template.request.helpers({
+    timepoint: function(){
+      return this.timestamp.getHours()+":"+this.timestamp.getMinutes()+":"+this.timestamp.getSeconds();
+    },
     isIt: function(){
       console.log(this.uid, Meteor.userId());
       if (this.uid === Meteor.userId()) {
@@ -87,8 +90,7 @@ if (Meteor.isClient) {
   Template.request.events({
     'click .remove': function(event) {
       SpeechRequest.remove(this._id);
-      console.log(this._id+" removed");
-    }    
+    }
   });
   Template.users.helpers({
   	users: function() {

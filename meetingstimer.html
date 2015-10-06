@@ -47,16 +47,18 @@
 <template name="requests">
   <div class="requests">
     <paper-button raised id="request">Wortmeldung aufzeigen</paper-button>
+  </div>
+  <div class="requests">
     {{#each speechrequests}}
       {{> request}}
     {{/each}}
   </div>
-  
+
 </template>
 
 <template name="request">
          <!-- TODO if name === Meteor.users.username then show remove button -->
-        <div>{{name}}: <i> {{timestamp}} {{_id}}</i>
+        <div>{{name}}: <i> {{timepoint}}</i>
         {{#if isIt}}
         <paper-button raised class="remove" data-id="{{_id}}">zurückziehen</paper-button>
         {{/if}}
