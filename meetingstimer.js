@@ -64,25 +64,31 @@ if (Meteor.isClient) {
   Template.requests.helpers({
     speechrequests: function () {
       return SpeechRequest.find({},{$sort: {timestamp: 1}});
-    },
-    isIt: function(){
-      if (this.uid._id === Meteor.userId()) {
-        return true;
-      }
-      return false;
     }
   });
   Template.requests.events({
     'click #request': function(event){
       SpeechRequest.insert({
-        uid: Meteor.user(),
+        uid: Meteor.userId(),
         name: Meteor.user().username,
         timestamp: new Date()
       });
-    },
-    'click .remove': function(event, template) {
-      console.log(template._id+" removed");
     }
+  });
+  Template.request.helpers({
+    isIt: function(){
+      console.log(this.uid, Meteor.userId());
+      if (this.uid === Meteor.userId()) {
+        return true;
+      }
+      return false;
+    }
+  });
+  Template.request.events({
+    'click .remove': function(event) {
+      SpeechRequest.remove(this._id);
+      console.log(this._id+" removed");
+    }    
   });
   Template.users.helpers({
   	users: function() {
@@ -141,7 +147,7 @@ if (Meteor.isClient) {
     },
     'click #request': function(event){
       SpeechRequest.insert({
-        uid: Meteor.user(),
+        uid: Meteor.userId(),
         name: Meteor.user().username,
         timestamp: new Date()
       });
